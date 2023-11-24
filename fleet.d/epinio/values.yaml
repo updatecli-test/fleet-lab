@@ -1,0 +1,12 @@
+global:
+  domain: olblak.com
+  tlsIssuer: "ovh-issuer"
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: "ovh-issuer"
+
+#epinio-ui:
+#  ingress:
+#    enabled: true

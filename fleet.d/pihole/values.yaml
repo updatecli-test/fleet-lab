@@ -1,0 +1,30 @@
+persistentVolumeClaim:
+  enabled: true
+
+serviceDns:
+  type: LoadBalancer
+
+# By default, pihole-kubernetes will configure pod DNS automatically to use Google's 8.8.8.8 nameserver for upstream DNS resolution.
+# You can configure this, or opt-out of pod DNS configuration completely.
+podDnsConfig:
+  enabled: true
+  policy: "None"
+  nameservers:
+  - 127.0.0.1
+  - 1.1.1.1   
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: "ovh-issuer"
+  hosts:
+    - "pihole.olblak.com"
+  path: /
+  tls:
+    - secretName: pihole-olblak-com-tls
+      hosts:
+        - pihole.olblak.com
+
+virtualHost: pihole.olblak.com

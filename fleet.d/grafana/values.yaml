@@ -1,0 +1,52 @@
+## Import Dashboard
+# https://artifacthub.io/packages/helm/grafana/grafana
+
+dashboards:
+  default:
+    prometheus-stats:
+      # Ref: https://grafana.com/dashboards/2
+      gnetId: 2
+      revision: 2
+      datasource: Prometheus
+
+datasources:
+ datasources.yaml:
+   apiVersion: 1
+   datasources:
+      # <string, required> name of the datasource. Required
+    - name: Prometheus
+      # <string, required> datasource type. Required
+      type: prometheus
+      # <string, required> access mode. proxy or direct (Server or Browser in the UI). Required
+      access: server
+      # <int> org id. will default to orgId 1 if not specified
+      orgId: 1
+      # <string> url
+      url: http://prometheus.default
+      editable: false
+
+grafana.ini:
+  server:
+    domain: monitoring.olblak.com
+    root_url: "%(protocol)s://%(domain)s/"
+    serve_from_sub_path: true
+
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: "traefik"
+    kubernetes.io/tls-acme: "true"
+    cert-manager.io/cluster-issuer: "ovh-issuer"
+  enabled: true
+  hosts:
+    - "monitoring.olblak.com"
+  path: /
+  tls:
+    - secretName: "monitoring-olblak-com-tls"
+      hosts:
+        - monitoring.olblak.com
+
+sidecar:
+  datasources:
+    enabled: true
+  dashboards:
+    enabled: true

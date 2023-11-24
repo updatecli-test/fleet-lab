@@ -1,0 +1,51 @@
+controller:
+  installPlugins:
+    - "gitea"
+    - "github"
+    - "github-branch-source"
+    - "credentials"
+    - "git"
+    - "kubernetes"
+    - "configuration-as-code"
+    - "workflow-aggregator"
+    - "prometheus"
+  ingress:
+    enabled: true
+    apiVersion: "extensions/v1beta1"
+    hostName: "jenkins.olblak.com"
+    annotations:
+      kubernetes.io/ingress.class: "traefik"
+      kubernetes.io/tls-acme: "true"
+      cert-manager.io/cluster-issuer: "ovh-issuer"
+    tls:
+      - secretName: jenkins-olblak-com-tls
+        hosts:
+          - jenkins.olblak.com
+
+  sidecars:
+    configAutoReload:
+      enabled: true
+
+  JCasC:
+    securityRealm: |-
+      local:
+        allowsSignup: false
+        enableCaptcha: false
+        users:
+        - id: "${chart-admin-username}"
+          name: "Jenkins Admin"
+          password: "${chart-admin-password}"
+    authorizationStrategy: |-
+      loggedInUsersCanDoAnything:
+        allowAnonymousRead: false
+  jenkinsUrl: "https://jenkins.olblak.com"
+  jenkinsAdminEmail: "jenkins@olblak.com"
+  prometheus:
+    enabled: true
+  persistence:
+    enabled: true
+    size: "50Gi"
+
+rbac:
+  create: true
+
